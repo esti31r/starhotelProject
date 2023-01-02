@@ -1,17 +1,16 @@
-import requests
 import pandas as pd
+import requests
 from bs4 import BeautifulSoup
-
 
 
 branch_names = []
 branch_rating = []
 
-opset = 25
-for i in range(7):
+opset = 0
+for i in range(39):
 
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"}
-    target_url = "https://www.booking.com/searchresults.html?label=gen173nr-1FCAEoggI46AdIM1gEaGqIAQGYATG4ARfIAQ_YAQHoAQH4AQKIAgGoAgO4AuCYnZ0GwAIB0gIkODY5NmI3MWUtMTcxNy00ZjFmLTk0ZTktNjQ4MGU3Y2I2NGRl2AIF4AIB&sid=df045411fb6cd87fd8af2d35cf08251b&aid=304142&dest_id=&ss=france&checkin_month=&error_url=https%3A%2F%2Fwww.booking.com%2Findex.html%3Flabel%3Dgen173nr-1FCAEoggI46AdIM1gEaGqIAQGYATG4ARfIAQ_YAQHoAQH4AQKIAgGoAgO4AuCYnZ0GwAIB0gIkODY5NmI3MWUtMTcxNy00ZjFmLTk0ZTktNjQ4MGU3Y2I2NGRl2AIF4AIB%26sid%3Ddf045411fb6cd87fd8af2d35cf08251b%26sb_price_type%3Dtotal%26%26&sb_lp=1&sb=1&src_elem=sb&checkin_year=&dest_type=&src=index&b_h4u_keep_filters=&search_selected=false&group_children=0&no_rooms=1&checkout_year=&is_ski_area=0&ss_raw=fg&checkout_month=&from_sf=1&group_adults=2&auth_success=1&search_pageview_id=205485b04d900109&offset="+str(opset)
+    target_url = "https://www.booking.com/searchresults.en-us.html?aid=7965225&lang=en-us&sid=4dc310284f88d2a3f8b9c9061560a7ef&sb=1&sb_lp=1&src=index&src_elem=sb&error_url=https%3A%2F%2Fwww.booking.com%2Findex.en-us.html%3Faid%3D7965225%26sid%3D4dc310284f88d2a3f8b9c9061560a7ef%26sb_price_type%3Dtotal%3Bsrpvid%3Dcc2f829be2810053%26%26&ss=France&is_ski_area=&checkin_year=&checkin_month=&checkout_year=&checkout_month=&efdco=1&group_adults=2&group_children=0&no_rooms=1&b_h4u_keep_filters=&from_sf=1&ss_raw=france&ac_position=0&ac_langcode=en&ac_click_type=b&ac_meta=GhA5YzVjODJhMGUyY2IwMjkxIAAoATICZW46BmZyYW5jZUAASgBQAA%3D%3D&dest_id=73&dest_type=country&place_id_lat=46.8664&place_id_lon=2.59596&search_pageview_id=9c5c82a0e2cb0291&search_selected=true&search_pageview_id=9c5c82a0e2cb0291&ac_suggestion_list_length=5&ac_suggestion_theme_list_length=0&offset="+str(opset)
     opset = opset + 25
     print(opset)
     resp = requests.get(target_url, headers=headers)
@@ -19,14 +18,15 @@ for i in range(7):
 
     branches = soup.find_all("div", {"class": "a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942"})
     for branch in branches:
-         name = branch.find("div", {"class": "fcab3ed991 a23c043802"}).get_text()
-         branch_names.append(name)
-         rating = branch.find("div", {"class": "b5cd09854e d10a6220b4"}).get_text()
-         branch_rating.append(rating)
-
-
-
-
+        try:
+            name = branch.find("div", {"class": "fcab3ed991 a23c043802"}).get_text()
+            rating = branch.find("div", {"class": "b5cd09854e d10a6220b4"}).get_text()
+        except:
+            print("An exception occurred")
+        branch_names.append(name)
+        print(len(branch_names))
+        branch_rating.append(rating)
+        print(len(branch_rating))
 
 df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating})
 df.to_excel("output.xlsx")
