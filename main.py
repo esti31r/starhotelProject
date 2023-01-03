@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 branch_names = []
 branch_rating = []
+branch_propeties = []
 
 opset = 0
 for i in range(39):
@@ -17,16 +18,27 @@ for i in range(39):
     soup = BeautifulSoup(resp.text, 'html.parser')
 
     branches = soup.find_all("div", {"class": "a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942"})
+    a_href = soup.find_all("a", {"class": "e13098a59f"})
+
     for branch in branches:
         try:
             name = branch.find("div", {"class": "fcab3ed991 a23c043802"}).get_text()
             rating = branch.find("div", {"class": "b5cd09854e d10a6220b4"}).get_text()
+            href = branch.find("a", {"class": "e13098a59f"}).get("href")
+
+            resp_herf = requests.get(href, headers=headers)
+            soup_herf = BeautifulSoup(resp_herf.text, 'html.parser')
+            propeties = soup_herf.find_all("div", {"class": "bui-list__description"})
+
         except:
             print("An exception occurred")
-        branch_names.append(name)
-        print(len(branch_names))
-        branch_rating.append(rating)
-        print(len(branch_rating))
 
-df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating})
+        propeties_text = [i.get_text() for i in propeties]
+        print(propeties_text)
+
+        branch_names.append(name)
+        branch_rating.append(rating)
+        branch_propeties.append(propeties_text)
+
+df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating , 'properties':branch_propeties})
 df.to_excel("output.xlsx")
