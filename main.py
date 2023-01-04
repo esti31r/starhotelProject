@@ -3,9 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 
 
+def check_facility_exists(df, facility):
+  df[facility] = df['facilities'].apply(lambda x: facility in x)
+  return df
+
+
 branch_names = []
 branch_rating = []
-branch_propeties = []
+branch_facilitiesAndServices = []
+branch_numOfFacilitiesAndServices =[]
 
 opset = 0
 for i in range(39):
@@ -16,29 +22,41 @@ for i in range(39):
     print(opset)
     resp = requests.get(target_url, headers=headers)
     soup = BeautifulSoup(resp.text, 'html.parser')
-
+    testedFacilitiesAndServices = ['Toilet paper','Towels','Toilet','Free toiletries','Hairdryer','Terrace','Garden','Coffee machine','Flat-screen TV']
     branches = soup.find_all("div", {"class": "a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942"})
     a_href = soup.find_all("a", {"class": "e13098a59f"})
 
     for branch in branches:
         try:
+            city = []
             name = branch.find("div", {"class": "fcab3ed991 a23c043802"}).get_text()
             rating = branch.find("div", {"class": "b5cd09854e d10a6220b4"}).get_text()
             href = branch.find("a", {"class": "e13098a59f"}).get("href")
-
             resp_herf = requests.get(href, headers=headers)
             soup_herf = BeautifulSoup(resp_herf.text, 'html.parser')
-            propeties = soup_herf.find_all("div", {"class": "bui-list__description"})
+            facilitiesAndServices = soup_herf.find_all("div", {"class": "bui-list__description"})
 
         except:
             print("An exception occurred")
 
-        propeties_text = [i.get_text() for i in propeties]
-        print(propeties_text)
-
+        facilitiesAndServices_text = [i.get_text() for i in facilitiesAndServices]
         branch_names.append(name)
         branch_rating.append(rating)
-        branch_propeties.append(propeties_text)
+        branch_numOfFacilitiesAndServices.append(len(facilitiesAndServices))
+        branch_facilitiesAndServices.append(facilitiesAndServices_text)
 
-df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating , 'properties':branch_propeties})
-df.to_excel("output.xlsx")
+
+#delete the newline character \n at the beginning and end of each string in a list of lists
+stripped_list_of_lists = [[val.strip() for val in sublist] for sublist in branch_facilitiesAndServices] 
+
+#create the first basic df before split the facilities coloumn
+df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating , 'facilities':stripped_list_of_lists, 'numOfFacilitiesAndServices':branch_numOfFacilitiesAndServices})
+
+#Create coloumn for each facility that we want to check (from the list above)
+#and check if exists using function and set boolean value in the new column
+for facility in testedFacilitiesAndServices:
+    check_facility_exists(df, facility)
+
+
+
+df.to_excel("dataset.xlsx")
