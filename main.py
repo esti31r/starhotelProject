@@ -17,7 +17,7 @@ cities = [
 ]
 
 
-for city in cities:
+for city in range(len(cities)):
         opset = 0
         for i in range(39):
 
