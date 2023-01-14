@@ -10,12 +10,12 @@ def check_facility_exists(df, facility):
 
 
 def facilities_list_without_duplicates(lst_of_lst):
-    flat_list = []
+    facilities_list = []
     for sub_list in lst_of_lst:
         for val in sub_list:
-            if val not in flat_list:
-                flat_list.append(val)
-    return flat_list
+            if val not in facilities_list:
+                facilities_list.append(val)
+    return facilities_list
 
 #  create Lists
 branch_names = []
