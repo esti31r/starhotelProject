@@ -66,11 +66,13 @@ for k in range(len(cities)):
 
 
         
-testedFacilitiesAndServices = facilities_list_without_duplicates(branch_facilitiesAndServices)
+
 
  #delete the newline character \n at the beginning and end of each string in a list of lists
 stripped_list_of_lists = [[val.strip() for val in sublist] for sublist in branch_facilitiesAndServices]
 
+#create a list of all the facilities in all the hotels
+testedFacilitiesAndServices = facilities_list_without_duplicates(branch_facilitiesAndServices)
 #create the first basic df before split the facilities coloumn
 df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating , 'facilities':stripped_list_of_lists, 'numOfFacilitiesAndServices':branch_numOfFacilitiesAndServices  ,'City':branch_city})
 
