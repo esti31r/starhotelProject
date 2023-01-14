@@ -23,7 +23,7 @@ branch_rating = []
 branch_facilitiesAndServices = []
 branch_numOfFacilitiesAndServices =[]
 cities = [
-      "Paris" "Marseille", "Lyon" , "Nice", "Nantes", "Strasbourg"
+      "Paris", "Marseille", "Lyon" , "Nice", "Nantes", "Strasbourg"
 ]
 branch_city = []
 
