@@ -7,6 +7,16 @@ def check_facility_exists(df, facility):
   df[facility] = df['facilities'].apply(lambda x: facility in x)
   return df
 
+
+
+def facilities_list_without_duplicates(lst_of_lst):
+    flat_list = []
+    for sub_list in lst_of_lst:
+        for val in sub_list:
+            if val not in flat_list:
+                flat_list.append(val)
+    return flat_list
+
 #  create Lists
 branch_names = []
 branch_rating = []
@@ -33,7 +43,6 @@ for k in range(len(cities)):
              soup = BeautifulSoup(resp.text, 'html.parser')
             except:
                 print("ERORR2")
-            testedFacilitiesAndServices = ['Toilet paper','Towels','Toilet','Free toiletries','Hairdryer','Terrace','Garden','Coffee machine','Flat-screen TV']
             branches = soup.find_all("div", {"class": "a826ba81c4 fe821aea6c fa2f36ad22 afd256fc79 d08f526e0d ed11e24d01 ef9845d4b3 da89aeb942"})
             a_href = soup.find_all("a", {"class": "e13098a59f"})
 
@@ -56,19 +65,8 @@ for k in range(len(cities)):
                 branch_city.append(cities[k])
 
 
-        #delete the newline character \n at the beginning and end of each string in a list of lists
-        stripped_list_of_lists = [[val.strip() for val in sublist] for sublist in branch_facilitiesAndServices]
-
-        #create the first basic df before split the facilities coloumn
-        df = pd.DataFrame({'Name':branch_names, 'rating':branch_rating , 'facilities':stripped_list_of_lists, 'numOfFacilitiesAndServices':branch_numOfFacilitiesAndServices  ,'City':branch_city})
-
-        #Create coloumn for each facility that we want to check (from the list above)
-        #and check if exists using function and set boolean value in the new column
-        for facility in testedFacilitiesAndServices:
-            check_facility_exists(df, facility)
-
-
-        df.to_excel("dataset3.xlsx")
+        
+testedFacilitiesAndServices = facilities_list_without_duplicates(branch_facilitiesAndServices)
 
  #delete the newline character \n at the beginning and end of each string in a list of lists
 stripped_list_of_lists = [[val.strip() for val in sublist] for sublist in branch_facilitiesAndServices]
