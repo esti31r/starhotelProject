@@ -3,7 +3,7 @@ Contact:
 Omersr9@gmail.com
 esti31r@gmail.com
 
-Data Science project about predict class of Hotels 
+Data Science project 
 
 # PROJECT PRESENTION: 
 Part 1 - Data crawling 
